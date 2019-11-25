@@ -5,9 +5,47 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Shares from './shares'
+import type {Game} from './logic';
+import {newGame, newCompany, setShares} from './logic';
 
-class App extends Component {
+class App extends Component<{}, {game: Game}>{
+  state: {game: Game};
+
+  constructor(props){
+    super(props);
+    this.state = {game: newGame()};
+  }
+
+  doThing(fn: (Game, ...args: Array<any>) => Game): (...args: Array<any>) => void{
+    return (...args: Array<any>) => {
+      console.log('Calling doThing.fn ', args);
+      const newGame = fn(this.state.game, ...args);
+      this.setState({...this.state, ...{game: newGame}});
+    };
+  }
+
   render() {
+    let {game} = this.state;
+    game = newCompany(game, {name: 'A', basePrice: 20});
+    game = newCompany(game, {name: 'B', basePrice: 20});
+    game = newCompany(game, {name: 'C', basePrice: 20});
+    game = newCompany(game, {name: 'D', basePrice: 20});
+    game = newCompany(game, {name: 'E', basePrice: 20});
+    game = newCompany(game, {name: 'F', basePrice: 20});
+    game = newCompany(game, {name: 'G', basePrice: 20});
+    game = setShares(game, 'B', 'Red', 3);
+    game = setShares(game, 'B', 'Green', 3);
+    game = setShares(game, 'B', 'Blue', 3);
+    game = setShares(game, 'B', 'Yellow', 3);
+    game = setShares(game, 'C', 'Red', 3);
+    game = setShares(game, 'C', 'Green', 3);
+    game = setShares(game, 'C', 'Blue', 3);
+    game = setShares(game, 'C', 'Yellow', 3);
+    game = setShares(game, 'A', 'Red', 3);
+    game = setShares(game, 'A', 'Green', 3);
+    game = setShares(game, 'A', 'Blue', 3);
+    game = setShares(game, 'A', 'Yellow', 3);
+    console.log(game);
     return (
       <div className="App">
         <div className="App-header">
@@ -25,7 +63,12 @@ class App extends Component {
             <Accordion.Collapse eventKey="0">
               <Card.Body>
                 <h1>Contents of shares</h1>
-                <Shares/>
+                <Shares
+                  players={game.players}
+                  companies={game.rounds[game.currentRound-1].companies}
+                  shares={game.rounds[game.currentRound-1].shares}
+                  onChange={this.doThing(setShares)}
+                />
               </Card.Body>
             </Accordion.Collapse>
           </Card>
