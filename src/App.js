@@ -10,9 +10,10 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Modal from 'react-bootstrap/Modal';
-import Shares from './shares'
+import Shares from './shares';
+import Operating from './operating';
 import type {Game} from './logic';
-import {newGame, newCompany, setShares, clearAlert} from './logic';
+import {newGame, newCompany, setShares, clearAlert, setPayment, changeBasePrice} from './logic';
 
 class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: string}>{
 
@@ -186,10 +187,16 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
           </Card>
           <Card>
             <Accordion.Toggle as={Card.Header} eventKey="1">
-              Payouts
+              Operating
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="1">
-              <Card.Body>Contents of payouts</Card.Body>
+              <Card.Body>
+                <Operating
+                  round={game.rounds[game.currentRound-1]}
+                  onChangeBasePrice={this.doThing(changeBasePrice)}
+                  onSetPayment={this.doThing(setPayment)}
+                />
+              </Card.Body>
             </Accordion.Collapse>
           </Card>
         </Accordion>

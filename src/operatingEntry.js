@@ -1,26 +1,48 @@
 // @flow
 import React, { Component } from 'react';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Form from 'react-bootstrap/Form';
 
-
 class RawEntry extends Component {
+  render(){
+    return <p>Raw</p>;
+  }
 }
 
-export default class OperatingEntry extends Component {
+class GoodsEntry extends Component {
   render(){
+    return <p>Goods</p>;
+  }
+}
+
+export default class OperatingEntry extends Component<{
+  company: Company,
+  onSetPayment: (Payment) => void
+},{
+  rawMode: boolean
+}> {
+
+  state = {rawMode: false};
+
+  toggleRawMode = () => {
+    this.setState({rawMode: !this.state.rawMode});
+  }
+
+  render(){
+    let {rawMode} = this.state;
     return (
       <Form>
         <Form.Group>
           <Form.Check
-            type="switch"
+            type="checkbox"
             label="Raw number" 
+            checked={rawMode}
+            onChange={this.toggleRawMode}
           />
         </Form.Group>
-        <FormGroup>
+        <Form.Group>
           {rawMode && <RawEntry />}
-          {!rawMode && <OperatingEntry />}
-        </FormGroup>
+          {!rawMode && <GoodsEntry />}
+        </Form.Group>
       </Form>
     );
   }
