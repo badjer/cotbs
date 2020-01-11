@@ -1,11 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import type {Company, CompanyName, Shareholder} from './logic';
-import Table from 'react-bootstrap/Table';
+import Table, { Body} from 'react-bootstrap/Table';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export class ShareLine extends Component<{
   shareholders: Shareholder[],
@@ -14,23 +16,37 @@ export class ShareLine extends Component<{
   onChange: (Shareholder, number) => void,
 }>{
 
-  setShares(sh: Shareholder): (number) => void {
-    console.log('Calling Shareline.setShares', sh);
-    return (num) => this.props.onChange(sh, num);
+  setShares(sh: Shareholder): (evnt) => void{
+    return (evnt) => this.props.onChange(sh, parseInt(evnt.target.value, 10));
   }
 
-  renderPopover(num: number, onChange: (string) => void){
+  increment(sh: Shareholder): () => void {
+    return () => {
+      const cur = this.props.shares[sh] || 0;
+      this.props.onChange(sh, cur + 1);
+    };
+  }
+
+  decrement(sh: Shareholder): () => void {
+    return () => {
+      const cur = this.props.shares[sh] || 0;
+      this.props.onChange(sh, cur - 1);
+    };
+  }
+
+  renderPopover(sh: Shareholder, num?: number){
+    const displayNum = num || 0;
     return (
       <Popover>
         <Popover.Content>
           <InputGroup>
             <InputGroup.Prepend>
-              <InputGroup.Text>-</InputGroup.Text>
+              <Button onClick={this.decrement(sh)}>-</Button>
             </InputGroup.Prepend>
-            <Form.Control type="number" value={num} 
-              onChange={(e) => onChange(e.target.value)}/>
+            <Form.Control type="number" value={displayNum} 
+              onChange={this.setShares(sh)}/>
             <InputGroup.Append>
-              <InputGroup.Text>+</InputGroup.Text>
+              <Button onClick={this.increment(sh)}>+</Button>
             </InputGroup.Append>
           </InputGroup>
         </Popover.Content>
@@ -40,15 +56,17 @@ export class ShareLine extends Component<{
 
   render() {
     const {shareholders, company, shares} = this.props;
+    const hideZero = (num?: number) => num === 0 ? null : num;
     return (
       <tr>
         <td>{company.name}</td>
         {shareholders.map(sh => 
           <OverlayTrigger 
+            key={sh}
             trigger="click" 
             rootClose={true}
-            overlay={this.renderPopover(shares[sh], this.setShares(sh))}>
-            <td>{shares[sh]}</td>
+            overlay={this.renderPopover(sh, shares[sh])}>
+            <td>{hideZero(shares[sh])}</td>
           </OverlayTrigger>
         )}
       </tr>
@@ -64,34 +82,64 @@ export default class Shares extends Component<{
 }> {
 
   setShares(company: CompanyName): (Shareholder,number) => void {
-    console.log('Calling Shares.setShares', company);
     return (sh: Shareholder, num: number) => {
       this.props.onChange(company, sh, num);
     }
+  }
+
+  onDragEnd = result => {
+    const { destination, source, reason } = result;
+
+    // Not a thing to do...
+    if (!destination || reason === 'CANCEL') {
+      this.setState({
+      });
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    this.setState({
+    });
   }
 
   render(){
     const {players, companies, shares} = this.props;
     const shareholders = players.concat('Bank');
     return (
-      <Table size="sm" striped>
-        <thead>
-          <tr>
-            <th></th>
-            {shareholders.map(sh => <td>{sh}</td>)}
-          </tr>
-        </thead>
-        <tbody>
-          {companies.map(company => 
-            <ShareLine key={company.name}
-              shareholders={shareholders} 
-              company={company} 
-              shares={shares[company.name]} 
-              onChange={this.setShares(company.name)}
-            />
-          )}
-        </tbody>
-      </Table>
+      <DragDropContext onDragEnd={this.onDragEnd}>
+        <Table size="sm" striped bordered>
+          <thead>
+            <tr>
+              <th></th>
+              {shareholders.map(sh => <td key={sh}>{sh}</td>)}
+            </tr>
+          </thead>
+          <Droppable droppableId="table">
+            {(provided, droppableSnapshot) => {
+              return (
+                <Body ref={provided.innerRef}> 
+                  {companies.map(company => 
+                    <Draggable key={company.name}>
+                      <ShareLine key={company.name}
+                        shareholders={shareholders} 
+                        company={company} 
+                        shares={shares[company.name]} 
+                        onChange={this.setShares(company.name)}
+                      />
+                    </Draggable>
+                  )}
+                </Body>
+              );
+            }}
+          </Droppable>
+        </Table>
+      </DragDropContext>
     );
   }
 }

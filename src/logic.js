@@ -137,8 +137,8 @@ export function setPayment(game: Game, companyName: string, payment?: Payment): 
 }
 
 export function setShares(game: Game, companyName: string, shareholder: Shareholder, numShares: number): Game{
-  console.log(companyName, shareholder, numShares);
-  console.log(game);
+  if(numShares < 0) numShares = 0;
+  if(numShares > 10) numShares = 10;
   let res = copy(game);
   let curRound = res.rounds[res.currentRound-1];
   curRound.shares[companyName][shareholder] = numShares;
