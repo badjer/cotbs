@@ -1,13 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import type {Company, CompanyName, Shareholder} from './logic';
-import Table, { Body} from 'react-bootstrap/Table';
+import Table from 'react-bootstrap/Table';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export class ShareLine extends Component<{
   shareholders: Shareholder[],
@@ -112,7 +111,6 @@ export default class Shares extends Component<{
     const {players, companies, shares} = this.props;
     const shareholders = players.concat('Bank');
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
         <Table size="sm" striped bordered>
           <thead>
             <tr>
@@ -120,26 +118,17 @@ export default class Shares extends Component<{
               {shareholders.map(sh => <td key={sh}>{sh}</td>)}
             </tr>
           </thead>
-          <Droppable droppableId="table">
-            {(provided, droppableSnapshot) => {
-              return (
-                <Body ref={provided.innerRef}> 
-                  {companies.map(company => 
-                    <Draggable key={company.name}>
-                      <ShareLine key={company.name}
-                        shareholders={shareholders} 
-                        company={company} 
-                        shares={shares[company.name]} 
-                        onChange={this.setShares(company.name)}
-                      />
-                    </Draggable>
-                  )}
-                </Body>
-              );
-            }}
-          </Droppable>
+          <tbody>
+            {companies.map(company => 
+                <ShareLine key={company.name}
+                  shareholders={shareholders} 
+                  company={company} 
+                  shares={shares[company.name]} 
+                  onChange={this.setShares(company.name)}
+                />
+            )}
+          </tbody>
         </Table>
-      </DragDropContext>
     );
   }
 }

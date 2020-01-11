@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Accordion from 'react-bootstrap/Accordion';
@@ -15,7 +14,7 @@ import Shares from './shares'
 import type {Game} from './logic';
 import {newGame, newCompany, setShares, clearAlert} from './logic';
 
-class App extends Component<{}, {game: Game, showNew: boolean, newName?: string}>{
+class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: string}>{
 
   constructor(props){
     super(props);
@@ -40,7 +39,7 @@ class App extends Component<{}, {game: Game, showNew: boolean, newName?: string}
     game = setShares(game, 'A', 'Blue', 3);
     game = setShares(game, 'A', 'Yellow', 3);
     game.alert = 'Foobar alert';
-    this.state = {game: game, showNew: false};
+    this.state = {game: game, showNewCompany: false};
   }
 
   writeState = (partialState: State) => {
@@ -57,27 +56,33 @@ class App extends Component<{}, {game: Game, showNew: boolean, newName?: string}
     };
   }
 
-  toggleNew = () => {
-    this.writeState({showNew: !this.state.showNew});
+  newGame = () => {
+    if(confirm('Are you sure? This will erase all data')){
+      this.writeState({showNewCompany: false, game: newGame()});
+    }
   };
 
-  setNewName = (evnt) => {
-    this.writeState({newName: evnt.target.value});
+  toggleNewCompany = () => {
+    this.writeState({showNewCompany: !this.state.showNewCompany});
   };
 
-  setNewBasePrice = (evnt) => {
-    this.writeState({newBasePrice: evnt.target.value});
+  setNewCompanyName = (evnt) => {
+    this.writeState({newCompanyName: evnt.target.value});
   };
 
-  makeNew = () => {
-    const {game, newName, newBasePrice} = this.state;
+  setNewCompanyBasePrice = (evnt) => {
+    this.writeState({newCompanyBasePrice: evnt.target.value});
+  };
+
+  makeNewCompany = () => {
+    const {game, newCompanyName, newCompanyBasePrice} = this.state;
     const newGame = newCompany(game, {
-      name: newName,
-      basePrice: newBasePrice,
+      name: newCompanyName,
+      basePrice: newCompanyBasePrice,
     });
     this.writeState({game: newGame,
-      newName: null,
-      showNew: false
+      newCompanyName: null,
+      showNewCompany: false
     });
   };
 
@@ -91,7 +96,7 @@ class App extends Component<{}, {game: Game, showNew: boolean, newName?: string}
           </Nav>
           <Nav>
             <NavDropdown title="Menu" id="collasible-nav-dropdown">
-              <NavDropdown.Item href="#">New Game</NavDropdown.Item>
+              <NavDropdown.Item href="#" onClick={this.newGame}>New Game</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#">About</NavDropdown.Item>
             </NavDropdown>
@@ -119,11 +124,11 @@ class App extends Component<{}, {game: Game, showNew: boolean, newName?: string}
   };
 
   renderNewCompanyModal = () => {
-    const {newName, newBasePrice, showNew} = this.state;
+    const {newCompanyName, newCompanyBasePrice, showNewCompany} = this.state;
     return (
       <Modal
-        show={showNew}
-        onHide={this.toggleNew}
+        show={showNewCompany}
+        onHide={this.toggleNewCompany}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -137,17 +142,17 @@ class App extends Component<{}, {game: Game, showNew: boolean, newName?: string}
           <Form>
             <Form.Group>
               <Form.Label>Name</Form.Label>
-              <Form.Control type="text" value={newName} onChange={this.setNewName}/>
+              <Form.Control type="text" value={newCompanyName} onChange={this.setNewCompanyName}/>
             </Form.Group>
             <Form.Group>
               <Form.Label>Base Price</Form.Label>
-              <Form.Control type="number" value={newBasePrice} onChange={this.setNewBasePrice}/>
+              <Form.Control type="number" value={newCompanyBasePrice} onChange={this.setNewCompanyBasePrice}/>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Form>
-            <Button onClick={this.makeNew}>Add</Button>
+            <Button onClick={this.makeNewCompany}>Add</Button>
           </Form>
         </Modal.Footer>
       </Modal>
@@ -159,13 +164,6 @@ class App extends Component<{}, {game: Game, showNew: boolean, newName?: string}
     const {game} = this.state;
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
         {this.renderNavbar()}
         {this.renderAlert()}
         {this.renderNewCompanyModal()}
@@ -182,7 +180,7 @@ class App extends Component<{}, {game: Game, showNew: boolean, newName?: string}
                   shares={game.rounds[game.currentRound-1].shares}
                   onChange={this.doThing(setShares)}
                 />
-                <Button onClick={this.toggleNew}>New</Button>
+                <Button onClick={this.toggleNewCompany}>New Company</Button>
               </Card.Body>
             </Accordion.Collapse>
           </Card>
