@@ -41,6 +41,9 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
     game = setShares(game, 'A', 'Yellow', 3);
     game.alert = 'Foobar alert';
     this.state = {game: game, showNewCompany: false};
+    let storedGame = localStorage.getItem('cotbsGame');
+    if (storedGame != null)
+      this.state = JSON.parse(storedGame);
   }
 
   writeState = (partialState: State) => {
@@ -48,6 +51,7 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
     console.log(newState);
     this.setState(newState);
     // Write to local
+    localStorage.setItem('cotbsGame', JSON.stringify(newState));
   }
 
   doThing(fn: (Game, ...args: Array<any>) => Game): (...args: Array<any>) => void{
