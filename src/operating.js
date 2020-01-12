@@ -11,8 +11,8 @@ export default class Operating extends Component<{
   onSetPayment: (string, Payment) => void
 }> {
 
-  setPayment(c: Company): (evnt) => void{
-    return (evnt) => this.props.onSetPayment(c.name, evnt.target.value);
+  setPayment(c: Company): (payment: Payment) => void{
+    return (payment: Payment) => this.props.onSetPayment(c.name, payment);
   }
 
   paymentAmount(payment: Payment): number{
@@ -26,7 +26,7 @@ export default class Operating extends Component<{
       <Popover>
         <Popover.Content>
           <OperatingEntry
-            company={company}
+            payment={payment}
             onSetPayment={this.setPayment(company)}
           />
         </Popover.Content>
