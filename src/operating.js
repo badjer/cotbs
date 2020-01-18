@@ -22,6 +22,7 @@ export default class Operating extends Component<{
   }
 
   renderPopover(company: Company, payment: Payment){
+    payment = payment || {kind: 'goods', unitPrice: company.basePrice};
     return (
       <Popover>
         <Popover.Content>

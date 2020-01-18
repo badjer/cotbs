@@ -42,8 +42,8 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
     game.alert = 'Foobar alert';
     this.state = {game: game, showNewCompany: false};
     let storedGame = localStorage.getItem('cotbsGame');
-    if (storedGame != null)
-      this.state = JSON.parse(storedGame);
+    //if (storedGame != null)
+      //this.state = JSON.parse(storedGame);
   }
 
   writeState = (partialState: State) => {
