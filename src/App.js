@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import Form from 'react-bootstrap/Form';
 import Toast from 'react-bootstrap/Toast';
 import Navbar from 'react-bootstrap/Navbar';
@@ -13,7 +15,7 @@ import Modal from 'react-bootstrap/Modal';
 import Shares from './shares';
 import Operating from './operating';
 import type {Game} from './logic';
-import {newGame, newCompany, setShares, clearAlert, setPayment, changeBasePrice} from './logic';
+import {newGame, newCompany, setShares, clearAlert, setPayment, changeBasePrice, nextRound, prevRound} from './logic';
 
 class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: string}>{
 
@@ -174,6 +176,19 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
         {this.renderNewCompanyModal()}
         <Accordion defaultActiveKey="0">
           <Card>
+            <Card.Header>
+              <ButtonToolbar>
+                <ButtonGroup>
+                  <Button onClick={this.doThing(prevRound)}>Prev</Button>
+                </ButtonGroup>
+                <ButtonGroup>
+                  <Button disabled>Round {game.currentRound}</Button>
+                </ButtonGroup>
+                <ButtonGroup>
+                  <Button onClick={this.doThing(nextRound)}>Next</Button>
+                </ButtonGroup>
+              </ButtonToolbar>
+            </Card.Header>
             <Accordion.Toggle as={Card.Header} eventKey="0">
               Shares
             </Accordion.Toggle>

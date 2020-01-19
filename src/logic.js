@@ -90,15 +90,14 @@ export function nextRound(game: Game): Game{
   // in the new round (in this case, we're assuming that the
   // players changed something in the previous round and we
   // should re-copy over those changes into the next round)
-  const existingEmpty = 
-    res.rounds[res.currentRound].payments.length === 0;
-  const newRound = res.currentRound === res.rounds.length;
-  if(existingEmpty)
+  const existing = res.rounds[res.currentRound];
+  const isExistingEmpty = existing && existing.payments.length === 0;
+  const isNewRound = res.currentRound === res.rounds.length;
+  if(isExistingEmpty)
     res.alert = `Round ${res.currentRound+1} had no payments, so we reset it with share/payment info from round ${res.currentRound}`;
 
-  if(existingEmpty || newRound)
-    res.rounds.splice(res.currentRound, 
-      newRound(curRound.companies, curRound.shares));
+  if(isExistingEmpty || isNewRound)
+    res.rounds[res.currentRound] = newRound(curRound.companies, curRound.shares);
   res.currentRound++;
   return res;
 };
