@@ -14,6 +14,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Modal from 'react-bootstrap/Modal';
 import Shares from './shares';
 import Operating from './operating';
+import Report from './report';
 import type {Game} from './logic';
 import {newGame, newCompany, setShares, clearAlert, setPayment, changeBasePrice, nextRound, prevRound} from './logic';
 
@@ -189,6 +190,8 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
                 </ButtonGroup>
               </ButtonToolbar>
             </Card.Header>
+          </Card>
+          <Card>
             <Accordion.Toggle as={Card.Header} eventKey="0">
               Shares
             </Accordion.Toggle>
@@ -214,6 +217,20 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
                   round={game.rounds[game.currentRound-1]}
                   onChangeBasePrice={this.doThing(changeBasePrice)}
                   onSetPayment={this.doThing(setPayment)}
+                />
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+          <Card>
+            <Accordion.Toggle as={Card.Header} eventKey="2">
+              Payouts
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey="2">
+              <Card.Body>
+                <Report
+                  players={game.players}
+                  companies={game.rounds[game.currentRound-1].companies}
+                  shares={game.rounds[game.currentRound-1].shares}
                 />
               </Card.Body>
             </Accordion.Collapse>
