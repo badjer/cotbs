@@ -153,7 +153,7 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
             </Form.Group>
             <Form.Group>
               <Form.Label>Base Price</Form.Label>
-              <Form.Control type="number" value={newCompanyBasePrice} onChange={this.setNewCompanyBasePrice}/>
+              <Form.Control type="number" pattern="\\d*" value={newCompanyBasePrice} onChange={this.setNewCompanyBasePrice}/>
             </Form.Group>
           </Form>
         </Modal.Body>
