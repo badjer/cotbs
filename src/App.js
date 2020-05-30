@@ -51,7 +51,6 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
 
   writeState = (partialState: State) => {
     const newState = {...this.state, ...partialState};
-    console.log(newState);
     this.setState(newState);
     // Write to local
     localStorage.setItem('cotbsGame', JSON.stringify(newState));

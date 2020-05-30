@@ -196,8 +196,6 @@ export function getPayouts(round: OperatingRound): {[Payee]: number}{
     const payAmt = paymentTotal(payment);
     const perShareAmt = Math.round(payAmt / 10)
     res[companyName] = (res[companyName] || 0) + (perShareAmt * companyOwnedShares);
-    console.log('payment');
-    console.log(payment);
     shareHolders.forEach((sh) => {
       res[sh] = (res[sh] || 0) + (perShareAmt * shares[sh]);
     });

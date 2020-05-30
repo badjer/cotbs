@@ -9,7 +9,6 @@ export default class Report extends Component<{
 }> {
 
   render(){
-    console.log(this.props)
     const {round} = this.props;
     const payouts = getPayouts(round);
     const payees = Object.keys(payouts);
