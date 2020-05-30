@@ -2,6 +2,7 @@
 
 - Dev sever: yarn start
 - Deploy: yarn run deploy
+- View app at https://badjer.github.io/cotbs/
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
