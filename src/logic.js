@@ -173,7 +173,7 @@ function paymentTotal(payment: Payment): number{
     return payment.total;
   } else {
     return (payment.unitPrice * 
-      (payment.goodsSold + (0.5 * payment.halfPriceGoodsSold))) + 
+      (payment.goodsSold + (0.5 * (payment.halfPriceGoodsSold || 0)))) + 
       (payment.bonusTwenty ? 20 : 0) + 
       (payment.bonusFifty ? 50 : 0);
   }
@@ -182,19 +182,24 @@ function paymentTotal(payment: Payment): number{
 export function getPayouts(round: OperatingRound): {[Payee]: number}{
   // shares is {[ShareHolder]: number}
   let res = {};
-  round.shares.forEach((companyName, shares) => {
+  if ((round == null) || (round.shares == null))
+    return res;
+  const companies = Object.keys(round.shares);
+  companies.forEach(companyName => {
+    const shares = round.shares[companyName];
+    const shareHolders = Object.keys(shares);
     const payment = round.payments[companyName];
     if(!payment)
       return;
-    const ownedShareCount = shares.values.reduce((a,b) => a+b,0);
+    const ownedShareCount = shareHolders.reduce((sum, sh) => sum + shares[sh], 0);
     const companyOwnedShares = 10 - ownedShareCount;
     const payAmt = paymentTotal(payment);
     const perShareAmt = Math.round(payAmt / 10)
-    res[companyName] = (res[companyName] || 0) +
-      (perShareAmt * companyOwnedShares);
-    shares.forEach((payeeShares,payee) => {
-      res[payee] = (res[payee] || 0) +
-        (perShareAmt * payeeShares);
+    res[companyName] = (res[companyName] || 0) + (perShareAmt * companyOwnedShares);
+    console.log('payment');
+    console.log(payment);
+    shareHolders.forEach((sh) => {
+      res[sh] = (res[sh] || 0) + (perShareAmt * shares[sh]);
     });
   });
   return res;
