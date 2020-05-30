@@ -42,7 +42,7 @@ export class ShareLine extends Component<{
             <InputGroup.Prepend>
               <Button onClick={this.decrement(sh)}>-</Button>
             </InputGroup.Prepend>
-            <Form.Control type="number" pattern="\\d*" value={displayNum} 
+            <Form.Control type="number" pattern="[0-9]*" value={displayNum} 
               onChange={this.setShares(sh)}/>
             <InputGroup.Append>
               <Button onClick={this.increment(sh)}>+</Button>

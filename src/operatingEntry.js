@@ -20,7 +20,7 @@ class RawEntry extends Component<{
     let {total} = this.props.payment || {};
     return (
       <InputGroup>
-        <Form.Control type="number" pattern="\\d*" value={total} 
+        <Form.Control type="number" pattern="[0-9]*" value={total} 
           onChange={this.setPayment}/>
       </InputGroup>
     );
@@ -59,7 +59,7 @@ class GoodsEntry extends Component<{
     return (
       <Form.Group>
         <Form.Label>{label}</Form.Label>
-        <Form.Control type="number" pattern="\\d*" value={payment[field]} onChange={this.setPaymentNumber(payment, field)} />
+        <Form.Control type="number" pattern="[0-9]*" value={payment[field]} onChange={this.setPaymentNumber(payment, field)} />
       </Form.Group>
     );
   }
