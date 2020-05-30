@@ -35,7 +35,7 @@ class GoodsEntry extends Component<{
   goodifyPayment(payment): GoodsPayment{
     payment.kind = 'goods';
     let {goodsSold, unitPrice, halfPriceGoodsSold, bonusTwenty, bonusFifty} = {...{goodsSold: 0, unitPrice: 0, halfPriceGoodsSold: 0, bonusFifty: false, bonusTwenty: false}, ...payment};
-    payment.total = Math.round((goodsSold * unitPrice) + (halfPriceGoodsSold * unitPrice * 0.5) + (bonusFifty? 50: 0) + (bonusTwenty? 20: 0));
+    payment.total = Math.round(((goodsSold || 0) * (unitPrice || 0)) + ((halfPriceGoodsSold || 0) * (unitPrice || 0) * 0.5) + (bonusFifty? 50: 0) + (bonusTwenty? 20: 0));
     return payment;
   }
 
