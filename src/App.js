@@ -227,6 +227,7 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
             <Accordion.Collapse eventKey="2">
               <Card.Body>
                 <Report
+                  players={game.players}
                   round={game.rounds[game.currentRound-1]}
                 />
               </Card.Body>

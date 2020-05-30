@@ -1,17 +1,18 @@
 // @flow
 import React, { Component } from 'react';
-import type {OperatingRound} from './logic';
+import type {OperatingRound, Player} from './logic';
 import Table from 'react-bootstrap/Table';
 import {getPayouts} from './logic';
 
 export default class Report extends Component<{
+  players: Player[],
   round: OperatingRound,
 }> {
 
   render(){
-    const {round} = this.props;
+    const {round, players} = this.props;
     const payouts = getPayouts(round);
-    const payees = Object.keys(payouts);
+    const payees = players.concat(round.companies.map(c => c.name));
     return (
         <Table size="sm" striped bordered>
           <thead>
