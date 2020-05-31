@@ -14,14 +14,7 @@ export type Company = {
   basePrice: number
 };
 
-export type RawPayment = {
-  kind: 'raw',
-  total: number,
-  withhold: false,
-};
-
-export type GoodsPayment = {
-  kind: 'goods',
+export type Payment = {
   total: number,
   unitPrice: number,
   goodsSold: number,
@@ -31,8 +24,6 @@ export type GoodsPayment = {
   extraAmt: number,
   withhold: boolean,
 }
-
-export type Payment = RawPayment | GoodsPayment;
 
 export type OperatingRound = {
   // Copied because it changes round to round
@@ -130,10 +121,8 @@ export function setPayment(game: Game, companyName: string, payment?: Payment): 
     curRound.payments[companyName] = payment;
     // If we are setting a goods price, check if we changed the
     // company base price
-    if(payment.kind === 'goods'){
-      let c = curRound.companies.filter(c => c.name === companyName)[0];
-      c.basePrice = payment.unitPrice;
-    }
+    let c = curRound.companies.filter(c => c.name === companyName)[0];
+    c.basePrice = payment.unitPrice;
   }
   return res;
 }
@@ -172,15 +161,11 @@ export function decShares(game: Game, companyName: string, shareholder: Sharehol
 }
 
 function paymentTotal(payment: Payment): number{
-  if(payment.kind === 'raw'){
-    return payment.total;
-  } else {
-    return (payment.unitPrice * 
-      (payment.goodsSold + (0.5 * (payment.halfPriceGoodsSold || 0)))) + 
-      (payment.bonusTwenty ? 20 : 0) + 
-      (payment.bonusFifty ? 50 : 0) + 
-      (payment.extraAmt || 0);
-  }
+  return (payment.unitPrice * 
+    (payment.goodsSold + (0.5 * (payment.halfPriceGoodsSold || 0)))) + 
+    (payment.bonusTwenty ? 20 : 0) + 
+    (payment.bonusFifty ? 50 : 0) + 
+    (payment.extraAmt || 0);
 }
 
 export function getPayouts(round: OperatingRound): {[Payee]: number}{

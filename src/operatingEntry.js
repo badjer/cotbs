@@ -1,39 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-
-class RawEntry extends Component<{
-  payment: RawPayment,
-  onSetPayment: (Payment) => void
-}> {
-
-  setPayment = (evnt) => {
-    let val = parseInt(evnt.target.value, 10);
-    this.props.onSetPayment({
-      kind: 'raw', 
-      total: val,
-    });
-  }
-
-  render(){
-    let {total} = this.props.payment || {};
-    return (
-      <InputGroup>
-        <Form.Control type="number" pattern="[0-9]*" value={total} 
-          onChange={this.setPayment}/>
-      </InputGroup>
-    );
-  }
-}
 
 class GoodsEntry extends Component<{
-  payment: GoodsPayment,
+  payment: Payment,
   onSetPayment: (Payment) => void
 }> {
 
-  goodifyPayment(payment): GoodsPayment{
-    payment.kind = 'goods';
+  goodifyPayment(payment): Payment{
     let {goodsSold, unitPrice, halfPriceGoodsSold, bonusTwenty, bonusFifty, extraAmt} = {...{goodsSold: 0, unitPrice: 0, halfPriceGoodsSold: 0, bonusFifty: false, bonusTwenty: false, extraAmt: 0}, ...payment};
     payment.total = Math.round(((goodsSold || 0) * (unitPrice || 0)) + ((halfPriceGoodsSold || 0) * (unitPrice || 0) * 0.5) + (bonusFifty? 50: 0) + (bonusTwenty? 20: 0) + (extraAmt || 0));
     return payment;
@@ -41,7 +15,7 @@ class GoodsEntry extends Component<{
 
   setPaymentNumber(payment, field): (evnt) => void{
     return (evnt) => {
-      payment = payment || {kind: 'goods', unitPrice: 0, goodsSold: 0, halfPriceGoodsSold: 0, bonusTwenty: false, bonusFifty: false};
+      payment = payment || {unitPrice: 0, goodsSold: 0, halfPriceGoodsSold: 0, bonusTwenty: false, bonusFifty: false};
       payment[field] = parseInt(evnt.target.value, 10);
       this.props.onSetPayment(this.goodifyPayment(payment));
     }
@@ -49,7 +23,7 @@ class GoodsEntry extends Component<{
 
   setPaymentFlag(payment, field, value): () => void{
     return () => {
-      payment = payment || {kind: 'goods', unitPrice: 0, goodsSold: 0, halfPriceGoodsSold: 0, bonusTwenty: false, bonusFifty: false};
+      payment = payment || {unitPrice: 0, goodsSold: 0, halfPriceGoodsSold: 0, bonusTwenty: false, bonusFifty: false};
       payment[field] = value;
       this.props.onSetPayment(this.goodifyPayment(payment));
     }
@@ -97,26 +71,14 @@ class GoodsEntry extends Component<{
 export default class OperatingEntry extends Component<{
   payment: Payment,
   onSetPayment: (Payment) => void
-},{
-  rawMode: boolean
 }> {
-
-  setRawMode(val: boolean): () => void{
-    return () => this.setState({rawMode: val});
-  }
 
   render(){
     let {payment, onSetPayment} = this.props;
-    let rawMode = false;
-    if (payment != null)
-      rawMode = payment.kind === 'raw';
-    if(this.state != null && this.state.rawMode != null)
-      rawMode = this.state.rawMode;
     return (
       <Form>
         <Form.Group>
-          {rawMode && <RawEntry payment={payment} onSetPayment={onSetPayment}/>}
-          {!rawMode && <GoodsEntry payment={payment} onSetPayment={onSetPayment} />}
+          <GoodsEntry payment={payment} onSetPayment={onSetPayment} />
         </Form.Group>
       </Form>
     );
