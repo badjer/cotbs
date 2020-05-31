@@ -38,12 +38,24 @@ export default class Operating extends Component<{
 
   render(){
     let {companies, payments} = this.props.round;
+    const hideZero = (num?: number) => {
+      if (num === 0 || num == null || isNaN(num))
+        return null;
+      return Math.floor(num);
+    };
     return (
         <Table size="sm" striped bordered>
-          <thead></thead>
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th>2x</th>
+              <th>3x</th>
+            </tr>
+          </thead>
           <tbody>
             {companies.map(company => 
-              <tr key={company.name}>
+              <tr key={company.name.concat('-1')}>
                 <td>{company.name}</td>
                 <OverlayTrigger
                   key={company.name}
@@ -52,6 +64,8 @@ export default class Operating extends Component<{
                   overlay={this.renderPopover(company, payments[company.name])}>
                     <td>{this.paymentAmount(payments[company.name])}</td>
                 </OverlayTrigger>
+                <td>{hideZero(this.paymentAmount(payments[company.name]) / 2)}</td>
+                <td>{hideZero(this.paymentAmount(payments[company.name]) / 3)}</td>
               </tr>
             )}
           </tbody>

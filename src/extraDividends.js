@@ -44,7 +44,7 @@ export default class ExtraDividends extends Component<{
               <tr key={company.name}>
                 <td>{company.name}</td>
                 {shareholders.map(sh =>
-                  <td>{hideZero(((amount || 0) / 10) * (shares[company.name][sh] || 0))}</td>
+                  <td key={sh}>{hideZero(((amount || 0) / 10) * (shares[company.name][sh] || 0))}</td>
                 )}
               </tr>
             )}

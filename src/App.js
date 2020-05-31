@@ -209,7 +209,7 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
           </Card>
           <Card>
             <Accordion.Toggle as={Card.Header} eventKey="1">
-              Extra Dividends
+              Dividend Calculator
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="1">
               <Card.Body>
