@@ -42,8 +42,8 @@ class GoodsEntry extends Component<{
     let checked = payment[field] === true;
     return (
       <Form.Group>
-        <Form.Check
-          type="checkbox"
+        <Form.Switch
+          id={field}
           label={label}
           checked={checked}
           onChange={this.setPaymentFlag(payment, field, !checked)}
