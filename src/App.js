@@ -25,7 +25,7 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
   constructor(props){
     super(props);
     let game = newGame();
-    game = newCompany(game, {name: 'A', basePrice: 20});
+    /*game = newCompany(game, {name: 'A', basePrice: 20});
     game = newCompany(game, {name: 'B', basePrice: 20});
     game = newCompany(game, {name: 'C', basePrice: 20});
     game = newCompany(game, {name: 'D', basePrice: 20});
@@ -44,7 +44,7 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
     game = setShares(game, 'A', 'Green', 3);
     game = setShares(game, 'A', 'Blue', 3);
     game = setShares(game, 'A', 'Yellow', 3);
-    game.alert = 'Foobar alert';
+    game.alert = 'Foobar alert';*/
     this.state = {game: game, showNewCompany: false};
     let storedGame = localStorage.getItem('cotbsGame');
     if (storedGame != null)
