@@ -38,8 +38,9 @@ export default class Operating extends Component<{
 
   render(){
     let {companies, payments} = this.props.round;
-    const hideZero = (num?: number) => {
-      if (num === 0 || num == null || isNaN(num))
+    const hideZero = (num?: number, minValue?: number) => {
+      minValue = minValue || 0;
+      if (num === 0 || num == null || isNaN(num) || num < minValue)
         return null;
       return Math.floor(num);
     };
@@ -65,7 +66,7 @@ export default class Operating extends Component<{
                     <td>{this.paymentAmount(payments[company.name])}</td>
                 </OverlayTrigger>
                 <td>{hideZero(this.paymentAmount(payments[company.name]) / 2)}</td>
-                <td>{hideZero(this.paymentAmount(payments[company.name]) / 3)}</td>
+                <td>{hideZero(this.paymentAmount(payments[company.name]) / 3, 60)}</td>
               </tr>
             )}
           </tbody>
