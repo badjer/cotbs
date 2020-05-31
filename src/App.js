@@ -16,8 +16,9 @@ import Shares from './shares';
 import ExtraDividends from './extraDividends';
 import Operating from './operating';
 import Report from './report';
+import Portfolios from './portfolios';
 import type {Game} from './logic';
-import {newGame, newCompany, setShares, clearAlert, setPayment, changeBasePrice, nextRound, prevRound} from './logic';
+import {newGame, newCompany, setShares, setStock, clearAlert, setPayment, changeBasePrice, nextRound, prevRound} from './logic';
 
 class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: string}>{
 
@@ -244,6 +245,22 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
                 <Report
                   players={game.players}
                   round={game.rounds[game.currentRound-1]}
+                />
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+          <Card>
+            <Accordion.Toggle as={Card.Header} eventKey="4">
+              Portfolios
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey="4">
+              <Card.Body>
+                <Portfolios
+                  players={game.players}
+                  companies={game.rounds[game.currentRound-1].companies}
+                  shares={game.rounds[game.currentRound-1].shares}
+                  stocks={game.rounds[game.currentRound-1].stocks || {}}
+                  onChange={this.doThing(setStock)}
                 />
               </Card.Body>
             </Accordion.Collapse>

@@ -33,6 +33,7 @@ export type OperatingRound = {
   shares: {[CompanyName]: {[Shareholder]: number}},
   // companyName -> Payment
   payments: {[string]: Payment},
+  stocks: {[CompanyName]: number},
 };
 
 export type Game = {
@@ -46,11 +47,12 @@ function copy(x: any): any{
   return JSON.parse(JSON.stringify(x));
 }
 
-function newRound(companies: Company[], shares: {[CompanyName]: {[Shareholder]: number}}): OperatingRound {
+function newRound(companies: Company[], shares: {[CompanyName]: {[Shareholder]: number}}, stocks: {[CompanyName]: number}): OperatingRound {
   return {
     companies: copy(companies),
     shares: copy(shares),
     payments: {},
+    stocks: copy(stocks),
   };
 }
 
@@ -58,7 +60,7 @@ export function newGame(players: Player[] = ['Red','Green','Yellow','Blue']): Ga
   return {
     players: players,
     currentRound: 1,
-    rounds: [newRound([], {})],
+    rounds: [newRound([], {}, {})],
   };
 };
 
@@ -91,7 +93,7 @@ export function nextRound(game: Game): Game{
     res.alert = `Round ${res.currentRound+1} had no payments, so we reset it with share/payment info from round ${res.currentRound}`;
 
   if(isExistingEmpty || isNewRound)
-    res.rounds[res.currentRound] = newRound(curRound.companies, curRound.shares);
+    res.rounds[res.currentRound] = newRound(curRound.companies, curRound.shares, curRound.stocks);
   res.currentRound++;
   return res;
 };
@@ -124,6 +126,13 @@ export function setPayment(game: Game, companyName: string, payment?: Payment): 
     let c = curRound.companies.filter(c => c.name === companyName)[0];
     c.basePrice = payment.unitPrice;
   }
+  return res;
+}
+
+export function setStock(game: Game, companyName: string, price?: number): Game{
+  let res = copy(game);
+  let curRound = res.rounds[res.currentRound-1];
+  curRound.stocks[companyName] = price || 0;
   return res;
 }
 
@@ -192,6 +201,20 @@ export function getPayouts(round: OperatingRound): {[Payee]: number}{
         res[sh] = (res[sh] || 0) + (perShareAmt * shares[sh]);
       });
     }
+  });
+  return res;
+}
+
+export function getPortfolioValues(players: Player[], stocks: {[CompanyName]: number}, shares: {[CompanyName]: {[Shareholder]: number}}): {[Player]: number}{
+  let res = {};
+  players.forEach((player) => {
+    res[player] = 0;
+  });
+  const companies = Object.keys(shares);
+  companies.forEach((company) => {
+    players.forEach((player) => {
+      res[player] += ((shares[company][player] || 0) * (stocks[company] || 0));
+    });
   });
   return res;
 }
