@@ -18,7 +18,8 @@ export default class Operating extends Component<{
   paymentAmount(payment: Payment): number{
     if(payment == null)
       return undefined;
-    return payment.total;
+    const withhold = payment.withhold ? ' (W)' : '';
+    return payment.total.toString().concat(withhold);
   }
 
   renderPopover(company: Company, payment: Payment){
