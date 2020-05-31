@@ -49,7 +49,7 @@ export default class Operating extends Component<{
           <thead>
             <tr>
               <th></th>
-              <th></th>
+              <th width="100%"></th>
               <th>2x</th>
               <th>3x</th>
             </tr>

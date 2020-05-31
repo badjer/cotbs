@@ -28,10 +28,10 @@ export default class ExtraDividends extends Component<{
     return (
       <div>
         <Form.Group>
-          <Form.Label>Amount</Form.Label>
           <Form.Control type="number" pattern="[0-9]*" value={amount} 
             onChange={this.setAmount}/>
         </Form.Group>
+        <p>For a divdend of {amount}, company pays:</p>
         <Table size="sm" striped bordered>
           <thead>
             <tr>
