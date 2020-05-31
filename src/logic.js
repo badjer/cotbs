@@ -17,6 +17,7 @@ export type Company = {
 export type RawPayment = {
   kind: 'raw',
   total: number,
+  withhold: false,
 };
 
 export type GoodsPayment = {
@@ -27,6 +28,8 @@ export type GoodsPayment = {
   halfPriceGoodsSold: number,
   bonusTwenty: boolean,
   bonusFifty: boolean,
+  extraAmt: number,
+  withhold: boolean,
 }
 
 export type Payment = RawPayment | GoodsPayment;
@@ -175,7 +178,8 @@ function paymentTotal(payment: Payment): number{
     return (payment.unitPrice * 
       (payment.goodsSold + (0.5 * (payment.halfPriceGoodsSold || 0)))) + 
       (payment.bonusTwenty ? 20 : 0) + 
-      (payment.bonusFifty ? 50 : 0);
+      (payment.bonusFifty ? 50 : 0) + 
+      (payment.extraAmt || 0);
   }
 }
 
@@ -195,10 +199,14 @@ export function getPayouts(round: OperatingRound): {[Payee]: number}{
     const companyOwnedShares = 10 - ownedShareCount;
     const payAmt = paymentTotal(payment);
     const perShareAmt = Math.floor(payAmt / 10)
-    res[companyName] = (res[companyName] || 0) + (perShareAmt * companyOwnedShares);
-    shareHolders.forEach((sh) => {
-      res[sh] = (res[sh] || 0) + (perShareAmt * shares[sh]);
-    });
+    if (payment.withhold){
+      res[companyName] = (res[companyName] || 0) + payAmt;
+    } else {
+      res[companyName] = (res[companyName] || 0) + (perShareAmt * companyOwnedShares);
+      shareHolders.forEach((sh) => {
+        res[sh] = (res[sh] || 0) + (perShareAmt * shares[sh]);
+      });
+    }
   });
   return res;
 }

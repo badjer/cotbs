@@ -34,8 +34,8 @@ class GoodsEntry extends Component<{
 
   goodifyPayment(payment): GoodsPayment{
     payment.kind = 'goods';
-    let {goodsSold, unitPrice, halfPriceGoodsSold, bonusTwenty, bonusFifty} = {...{goodsSold: 0, unitPrice: 0, halfPriceGoodsSold: 0, bonusFifty: false, bonusTwenty: false}, ...payment};
-    payment.total = Math.round(((goodsSold || 0) * (unitPrice || 0)) + ((halfPriceGoodsSold || 0) * (unitPrice || 0) * 0.5) + (bonusFifty? 50: 0) + (bonusTwenty? 20: 0));
+    let {goodsSold, unitPrice, halfPriceGoodsSold, bonusTwenty, bonusFifty, extraAmt} = {...{goodsSold: 0, unitPrice: 0, halfPriceGoodsSold: 0, bonusFifty: false, bonusTwenty: false, extraAmt: 0}, ...payment};
+    payment.total = Math.round(((goodsSold || 0) * (unitPrice || 0)) + ((halfPriceGoodsSold || 0) * (unitPrice || 0) * 0.5) + (bonusFifty? 50: 0) + (bonusTwenty? 20: 0) + (extraAmt || 0));
     return payment;
   }
 
@@ -82,11 +82,13 @@ class GoodsEntry extends Component<{
     let payment = this.props.payment || {};
     return (
       <React.Fragment>
+        {this.renderCheck('Withhold', payment, 'withhold')}
         {this.renderField('Goods sold', payment, 'goodsSold')}
         {this.renderField('1/2 Price Goods sold', payment, 'halfPriceGoodsSold')}
         {this.renderField('Price', payment, 'unitPrice')}
         {this.renderCheck('$50 Bonus', payment, 'bonusFifty')}
         {this.renderCheck('$20 Bonus', payment, 'bonusTwenty')}
+        {this.renderField('Extra Amount', payment, 'extraAmt')}
       </React.Fragment>
     );
   }
@@ -112,14 +114,6 @@ export default class OperatingEntry extends Component<{
       rawMode = this.state.rawMode;
     return (
       <Form>
-        <Form.Group>
-          <Form.Check
-            type="checkbox"
-            label="Raw number" 
-            checked={rawMode}
-            onChange={this.setRawMode(!rawMode)}
-          />
-        </Form.Group>
         <Form.Group>
           {rawMode && <RawEntry payment={payment} onSetPayment={onSetPayment}/>}
           {!rawMode && <GoodsEntry payment={payment} onSetPayment={onSetPayment} />}
