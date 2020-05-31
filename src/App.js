@@ -13,6 +13,7 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Modal from 'react-bootstrap/Modal';
 import Shares from './shares';
+import ExtraDividends from './extraDividends';
 import Operating from './operating';
 import Report from './report';
 import type {Game} from './logic';
@@ -208,9 +209,23 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
           </Card>
           <Card>
             <Accordion.Toggle as={Card.Header} eventKey="1">
-              Operating
+              Extra Dividends
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="1">
+              <Card.Body>
+                <ExtraDividends
+                  players={game.players}
+                  companies={game.rounds[game.currentRound-1].companies}
+                  shares={game.rounds[game.currentRound-1].shares}
+                />
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+          <Card>
+            <Accordion.Toggle as={Card.Header} eventKey="2">
+              Operating
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey="2">
               <Card.Body>
                 <Operating
                   round={game.rounds[game.currentRound-1]}
@@ -221,10 +236,10 @@ class App extends Component<{}, {game: Game, showNewCompany: boolean, newName?: 
             </Accordion.Collapse>
           </Card>
           <Card>
-            <Accordion.Toggle as={Card.Header} eventKey="2">
+            <Accordion.Toggle as={Card.Header} eventKey="3">
               Payouts
             </Accordion.Toggle>
-            <Accordion.Collapse eventKey="2">
+            <Accordion.Collapse eventKey="3">
               <Card.Body>
                 <Report
                   players={game.players}
