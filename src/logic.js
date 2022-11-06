@@ -168,7 +168,7 @@ export function decShares(game: Game, companyName: string, shareholder: Sharehol
 
 function paymentTotal(payment: Payment): number{
   return (payment.unitPrice * 
-    (payment.goodsSold + (0.5 * (payment.halfPriceGoodsSold || 0)))) + 
+    ((payment.goodsSold || 0) + (0.5 * (payment.halfPriceGoodsSold || 0)))) + 
     (payment.bonusTwenty ? 20 : 0) + 
     (payment.bonusFifty ? 50 : 0) + 
     (payment.extraAmt || 0);
